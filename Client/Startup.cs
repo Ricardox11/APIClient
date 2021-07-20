@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,8 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace Client
+namespace AppClient
 {
     public class Startup
     {
@@ -34,6 +35,15 @@ namespace Client
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "client", Version = "v1" });
             });
+
+            // servicio de conexion a BD
+           // services.AddDbContext<ClientContext>(options =>
+             //       options.UseSqlite(Configuration.GetConnectionString("ClientContext")));
+
+            // adicionar contexto Azure - Sqlserver - relacion con conexion 
+            services.AddDbContext<ClientContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ClientContext")));
+
+
 
         }
 
