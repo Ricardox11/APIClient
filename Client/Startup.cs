@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
+using AppClient.Controllers;
 
 namespace AppClient
 {
@@ -20,6 +21,9 @@ namespace AppClient
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            // usar consulta de iconfiguration sin instancia
+            ConfigurationApp.Configuration = configuration;
+
         }
 
         public IConfiguration Configuration { get; }
@@ -43,7 +47,8 @@ namespace AppClient
             // adicionar contexto Azure - Sqlserver - relacion con conexion 
             services.AddDbContext<ClientContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ClientContext")));
 
-
+            // usar instancia de iconfiguration
+            //services.AddTransient<ConfigurationApp>();
 
         }
 
