@@ -50,6 +50,10 @@ namespace AppClient
             // usar instancia de iconfiguration
             //services.AddTransient<ConfigurationApp>();
 
+
+            // SP - DI para llamar e instanciar
+            services.AddScoped<ClientRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

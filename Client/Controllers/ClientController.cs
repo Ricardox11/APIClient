@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Serilog.Sinks.MSSqlServer.Sinks.MSSqlServer.Options;
 using Serilog.Sinks.MSSqlServer;
 using System.Text.Json;
+using Microsoft.Data.SqlClient;
 
 namespace AppClient.Controllers
 {
@@ -37,6 +38,8 @@ namespace AppClient.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Client>>> GetClient()
         {
+
+            //  using(SqlConnection sql = new SqlConnection())
 
             // Manejo log manual 
             // connectionString =  ConfigurationApp.Configuration["ConnectionStrings:ClientContext"];
@@ -81,9 +84,9 @@ namespace AppClient.Controllers
             //var requestmsj = "Request Get " + JsonSerializer.Serialize(Client);
 
             // Response
-            List<AppClient.Models.Client> lista = _context.Client.ToList();
-            var responsemsj = "Response Get " + JsonSerializer.Serialize(lista);
-            LogApp.WriteLog(responsemsj, "Debug", "TEXT");
+            // IEnumerable<Client> lista = _context.Client.ToList();
+            var responsemsj = "Response Get ";  // + JsonSerializer.Serialize(lista);
+            LogApp.WriteLog(responsemsj, "Debug", "TEXT", _context.Client.ToList());
 
             return await _context.Client.ToListAsync();
         }
@@ -94,8 +97,8 @@ namespace AppClient.Controllers
         {
 
             //Request
-            var requestmsj = "Request Get Id " + JsonSerializer.Serialize(id);
-            LogApp.WriteLog(requestmsj, "Debug", "TEXT");
+            var requestmsj = "Request Get Id "; // + JsonSerializer.Serialize(id);
+            LogApp.WriteLog(requestmsj, "Debug", "TEXT", null);
 
             var client = await _context.Client.FindAsync(id);
 
@@ -103,14 +106,14 @@ namespace AppClient.Controllers
             {
                 // Error
                 var error = "Error Get Id " + JsonSerializer.Serialize(NotFound());
-                LogApp.WriteLog(error, "Error", "TEXT");
+                LogApp.WriteLog(error, "Error", "TEXT", null);
 
                 return NotFound();
             }
 
             // Response
-            var responsemsj = "Response Get Id " + JsonSerializer.Serialize(client);
-            LogApp.WriteLog(responsemsj, "Debug", "TEXT");
+            var responsemsj = "Response Get Id "; // + JsonSerializer.Serialize(client);
+            LogApp.WriteLog(responsemsj, "Debug", "TEXT", client);
 
 
             return client;
@@ -123,13 +126,13 @@ namespace AppClient.Controllers
         {
 
             //Request
-            var requestmsj = "Request PutClient Id - Client " + id + " "+ JsonSerializer.Serialize(client);
-            LogApp.WriteLog(requestmsj, "Debug", "TEXT");
+            var requestmsj = "Request PutClient Id - Client " + id + " " ; // + JsonSerializer.Serialize(client);
+            LogApp.WriteLog(requestmsj, "Debug", "TEXT", client);
 
             if (id != client.ClientId.ToString())
             {
                 var error = "Error PutClient " + JsonSerializer.Serialize(BadRequest());
-                LogApp.WriteLog(error, "Error", "TEXT");
+                LogApp.WriteLog(error, "Error", "TEXT", null);
 
                 return BadRequest();
             }
@@ -145,13 +148,13 @@ namespace AppClient.Controllers
                 if (!ClientExists(id))
                 {
                     var error2 = "Error PutClient " + JsonSerializer.Serialize(NotFound());
-                    LogApp.WriteLog(error2, "Error", "TEXT");
+                    LogApp.WriteLog(error2, "Error", "TEXT", null);
                     return NotFound();
                 }
                 else
                 {
                     var error3 = "Error PutClient " + JsonSerializer.Serialize(e);
-                    LogApp.WriteLog(error3, "Error", "TEXT");
+                    LogApp.WriteLog(error3, "Error", "TEXT", null);
                     return NotFound();
                     throw;
                 }
@@ -159,7 +162,7 @@ namespace AppClient.Controllers
 
             // Response
             var responsemsj = "Response Put Id " + JsonSerializer.Serialize(NoContent());
-            LogApp.WriteLog(responsemsj, "Debug", "TEXT");
+            LogApp.WriteLog(responsemsj, "Debug", "TEXT", null);
 
 
             return NoContent();
@@ -172,8 +175,8 @@ namespace AppClient.Controllers
         {
 
             //Request
-            var requestmsj = "Request Post " + JsonSerializer.Serialize(client);
-            LogApp.WriteLog(requestmsj, "Debug", "TEXT");
+            var requestmsj = "Request Post "; // + JsonSerializer.Serialize(client);
+            LogApp.WriteLog(requestmsj, "Debug", "TEXT", client);
 
 
 
@@ -187,21 +190,21 @@ namespace AppClient.Controllers
                 if (ClientExists(client.ClientId.ToString()))
                 {
                     var error = "Error PostClient " + JsonSerializer.Serialize(Conflict());
-                    LogApp.WriteLog(error, "Error", "TEXT");
+                    LogApp.WriteLog(error, "Error", "TEXT", null);
 
                     return Conflict();
                 }
                 else
                 {
                     var error2 = "Error PostClient " + JsonSerializer.Serialize(e);
-                    LogApp.WriteLog(error2, "Error", "TEXT");
+                    LogApp.WriteLog(error2, "Error", "TEXT", null);
                     throw;
                 }
             }
 
             // Response
-            var responsemsj = "Response Post " + JsonSerializer.Serialize(client);
-            LogApp.WriteLog(responsemsj, "Debug", "TEXT");
+            var responsemsj = "Response Post "; // + JsonSerializer.Serialize(client);
+            LogApp.WriteLog(responsemsj, "Debug", "TEXT", client);
 
 
             return CreatedAtAction("GetClient", new { id = client.ClientId }, client);
@@ -215,13 +218,13 @@ namespace AppClient.Controllers
 
             //Request
             var requestmsj = "Request DeleteClient " + JsonSerializer.Serialize(id);
-            LogApp.WriteLog(requestmsj, "Debug", "TEXT");
+            LogApp.WriteLog(requestmsj, "Debug", "TEXT", null);
 
             var client = await _context.Client.FindAsync(id);
             if (client == null)
             {
                 var error = "Error DeleteClient " + JsonSerializer.Serialize(NotFound());
-                LogApp.WriteLog(error, "Error", "TEXT");
+                LogApp.WriteLog(error, "Error", "TEXT", null);
 
                 return NotFound();
             }
@@ -231,7 +234,7 @@ namespace AppClient.Controllers
 
             // Response
             var responsemsj = "Response DeleteClient " + JsonSerializer.Serialize(NoContent());
-            LogApp.WriteLog(responsemsj, "Debug", "TEXT");
+            LogApp.WriteLog(responsemsj, "Debug", "TEXT", null);
 
 
             return NoContent();

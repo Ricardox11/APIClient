@@ -1,9 +1,16 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.Data.SqlClient;
 
 namespace AppClient.Models
 {
-    public class Client
+    // modelo para uso de SP con EF
+
+
+    // definir annotation para SP EF
+    [Table("Client", Schema = "dbo")]
+    public partial class ClientSp
     {
 
         // atributos
@@ -14,15 +21,21 @@ namespace AppClient.Models
         public string FName { get; set; }
         public string SName { get; set; }
         public string LName { get; set; }
-        
 
-        public Client()
+
+        public ClientSp()
         {
         }
 
-        public static explicit operator Client(SqlDataReader v)
+        public static explicit operator ClientSp(SqlDataReader v)
         {
             throw new NotImplementedException();
+        }
+
+        // depurador
+        public override string ToString()
+        {
+            return FName;
         }
     }
 }

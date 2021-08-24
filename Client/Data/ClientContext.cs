@@ -26,4 +26,19 @@ using AppClient.Models;
     }
 
     public DbSet<AppClient.Models.Client> Client { get; set; }
+    
+    // modelo SP EF
+     public DbSet<AppClient.Models.Client> ClientSp { get; set; }
+
+    // EF scalar
+    public DbSet<AppClient.Models.ClientScalar> ScalarIntValue { get; set; }
+
+
+    // indica a EF que no se tiene llave primaria
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<AppClient.Models.ClientScalar>().HasNoKey();
     }
+
+}

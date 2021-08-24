@@ -5,12 +5,14 @@ using Microsoft.Extensions.Configuration;
 using Serilog.Sinks.MSSqlServer.Sinks.MSSqlServer.Options;
 using Serilog.Sinks.MSSqlServer;
 using System.Text.Json;
+using System.Collections.Generic;
 
 
 // funcion para manejar el log de la aplicacion
 
 // WriteLog("Mensaje", "Information", "JSON"); Mensaje JSON para seguimiento de request y response
-// WriteLog("Mensaje", "Information", "TEXT"); Mensaje TEXT Informativos o errores 
+// WriteLog("Mensaje", "Information", "TEXT"); Mensaje TEXT Informativos o errores
+// IEnumerable<Object> Objetcd - trama a escribir o serializar
 
 
 namespace AppClient.Controllers
@@ -19,7 +21,7 @@ namespace AppClient.Controllers
     {
 
 
-        public static void WriteLog(string message, string LogType, string DataType )
+        public static void WriteLog(string message, string LogType, string DataType, Object Objetcd )
         {
             // cargar config del log
             var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
@@ -27,6 +29,13 @@ namespace AppClient.Controllers
             // crear log con config
             var logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
 
+            //menssage
+            if (Objetcd != null)
+            {
+                message = message + ' ' + JsonSerializer.Serialize(Objetcd);
+
+            }
+           
 
             // verifica el tipo de log que se requiere
 
