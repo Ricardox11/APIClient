@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using AppClient.Controllers;
+using System.Text.Json.Serialization;
 
 namespace AppClient
 {
@@ -23,6 +24,8 @@ namespace AppClient
             Configuration = configuration;
             // usar consulta de iconfiguration sin instancia
             ConfigurationApp.Configuration = configuration;
+
+
 
         }
 
@@ -41,8 +44,8 @@ namespace AppClient
             });
 
             // servicio de conexion a BD
-           // services.AddDbContext<ClientContext>(options =>
-             //       options.UseSqlite(Configuration.GetConnectionString("ClientContext")));
+            // services.AddDbContext<ClientContext>(options =>
+            //       options.UseSqlite(Configuration.GetConnectionString("ClientContext")));
 
             // adicionar contexto Azure - Sqlserver - relacion con conexion 
             services.AddDbContext<ClientContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ClientContext")));
@@ -53,6 +56,12 @@ namespace AppClient
 
             // SP - DI para llamar e instanciar
             services.AddScoped<ClientRepository>();
+
+            // evitar referencia circular entre relaciones de navegacion virtual
+           services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+
+
+
 
         }
 
@@ -68,7 +77,7 @@ namespace AppClient
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "client v1"));
             }
 
-        
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
