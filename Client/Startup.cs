@@ -15,6 +15,12 @@ using Microsoft.EntityFrameworkCore;
 using AppClient.Controllers;
 using System.Text.Json.Serialization;
 
+using AppClient.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 namespace AppClient
 {
     public class Startup
@@ -61,7 +67,29 @@ namespace AppClient
            services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 
+            // JWT - instancia Identity
 
+            
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+              .AddEntityFrameworkStores<ClientContext>()
+              .AddDefaultTokenProviders();
+
+
+            // configurar servicio JWT
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => // parametros de validacion de token
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidateIssuer = true,
+                     ValidateAudience = true,
+                     ValidateLifetime = true,
+                     ValidateIssuerSigningKey = true,
+                     ValidIssuer = "yourdomain.com",
+                     ValidAudience = "yourdomain.com",
+                     IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(Configuration["Llave_secreta1"])),
+                     ClockSkew = TimeSpan.Zero
+                 });
 
         }
 
@@ -77,6 +105,7 @@ namespace AppClient
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "client v1"));
             }
 
+            app.UseAuthentication(); // JWT Autenticar
 
             app.UseHttpsRedirection();
 

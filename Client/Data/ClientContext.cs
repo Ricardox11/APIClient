@@ -4,8 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using AppClient.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-public class ClientContext : DbContext
+public class ClientContext : IdentityDbContext<ApplicationUser>  // JWT cambio herencia Identity //DbContext
 {
     public ClientContext(DbContextOptions<ClientContext> options)
         : base(options)
@@ -17,7 +18,7 @@ public class ClientContext : DbContext
 
 
 
-       Database.EnsureCreated(); // solucion a error Crea BD si no existe
+      Database.EnsureCreated(); // solucion a error Crea BD si no existe
 
         // si hay cambios en Modelo Reconstruye la  BD - Desarrollo
         // produccion usar migrate
